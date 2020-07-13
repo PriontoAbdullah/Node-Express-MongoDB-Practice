@@ -12,39 +12,76 @@
 
     <div class="container">
         <div class="row">
-            <input type="text" class="from-control" id="user">
-            <button class=" btn btn-primary ml-2" id="addUser">Add User</button>
+            <input type="text" class="from-control ml-2" placeholder="Product Name" id="name">
+            <input type="text" class="from-control ml-2" placeholder="Product Price" id="price">
+            <input type="text" class="from-control ml-2"  placeholder="Stock" id="stock">
+            <button class=" btn btn-primary ml-2" id="addProduct">Add Product</button>
         </div>
+        <p style="display: none; color: green;" id="successMessage"><small>Product Added Successfully</small></p>
+        <ul id="product-list">
+
+        </ul>
     </div>
 
     <script>
         // GET data
-        fetch('http://localhost:3000/users/3')
+        fetch('http://localhost:3000/products')
         .then(res => res.json())
         .then(data =>{
-            document.getElementById('userName').innerText = data.name;
+            displayProducts(data);
         });
 
+        function displayProducts(data){
+            const productContainer = document.getElementById('product-list');
+            for(let i=0; i<data.length; i++){
+                const product = data[i];
+                appendProduct(product, productContainer);
+            }
+        }
+
+        function appendProduct(product, productContainer){
+            const item = document.createElement('li');
+                item.innerText = `${product.name}: $${product.price} Available: ${product.stock}`;
+                productContainer.appendChild(item);       
+        }
+
         // POST data to the Server
-        const btnAddUser = document.getElementById('addUser');
+        const btnAddUser = document.getElementById('addProduct');
         btnAddUser.addEventListener('click', () => {
-          const name = document.getElementById('user').value;
-          const user = {name};
+          const name = document.getElementById('name').value;
+          const price = document.getElementById('price').value;
+          const stock = document.getElementById('stock').value;
+          const product = {name, price, stock};
+          console.log(product);
           
           // post
-            fetch('http://localhost:3000/addUser', {
+            fetch('http://localhost:3000/addProduct', {
                 method: 'POST',
-                body: JSON.stringify(user),
+                body: JSON.stringify(product),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
                 }
             })
             .then(res => res.json())
-            .then(data => updateUser(data))
-        })
-
-        function updateUser(user){
-            document.getElementById('userName').innerText = user.name;
+            .then(data => { 
+                updateProduct(data);
+            // Clean data
+           document.getElementById('name').value = '';
+           document.getElementById('price').value = '';
+           document.getElementById('stock').value = '';
+            // show success message
+            const success = document.getElementById('successMessage');
+            success.style.display = 'block';
+            setTimeout(() => {
+                success.style.display='none';
+            }, 3000)
+            })
+        });
+  
+        function updateProduct(product){
+            const productContainer = document.getElementById('product-list');
+            appendProduct(product, productContainer);
+            document.getElementById('userName').innerText = product.name;
         }
     </script>
 </body>
