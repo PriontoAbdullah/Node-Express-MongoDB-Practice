@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <h2 class="my-5 mx-3">Node Mongo CRUD Application</h2>
+
+    <form action="/addProduct" method="post" class="mx-2">
+        <input type="text" class="from-control mx-2" name="name" placeholder="Name">
+        <input type="text" class="from-control mx-2" name="price" placeholder="Price">
+        <input type="text" class="from-control mx-2" name="quantity" placeholder="Quantity">
+        <button type="submit" class="btn btn-primary"> Add Product</button>
+    </form>
+
+    <div id="products" class="my-5"> </div>
+
+    <div id="update" class="my-5 ml-2"> </div>
+
+
+    <script type="text/javascript">
+        function loadProducts() {
+            fetch('/products')
+                .then(res => res.json())
+                .then(products => {
+                    console.log(products);
+                    const container = document.getElementById('products');
+                    container.innerHTML = '';
+
+                    products.forEach(pd => {
+                        const p = document.createElement('p');
+                        p.innerHTML = `
+                        <span class="mx-3 text-success lead"> <strong> ${pd.name} </strong> </span> 
+                        <span class="mx-3 text-danger">Price: ${pd.price} </span> 
+                        <span class="mx-3 text-secondary"> Quantity: ${pd.quantity} </span> 
+                        <button onclick="updateProduct('${pd._id}')" class="btn btn-warning"> Update</button> 
+                        <button onclick="deleteProduct(event, '${pd._id}')" class="btn btn-danger"> Delete </button>
+                        `;
+                        container.appendChild(p);
+                    })
+                })
+        }
+
+        loadProducts();
+
+        function deleteProduct(event, id) {
+            fetch(`/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(result => {
+                    console.log('Deleted successfully');
+                    if(result){
+                       event.target.parentNode.style.display = 'none'; 
+                    }
+                })
+        }
+
+        function setUpdating(id) {
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
+            const product = {
+                id,
+                price,
+                quantity
+            };
+
+            fetch(`/update/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(product)
+                })
+                .then(res => res.json())
+                .then(result => {
+                    console.log('Updated successfully');
+                    if(result){
+                        loadProducts();
+                        document.getElementById('update').innerHTML = '';
+                    }
+                })
+        }
+
+        function updateProduct(id) {
+            fetch(`/product/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    const update = document.getElementById('update');
+                    update.innerHTML = `
+                <h4 class="my-2"> Update: ${data.name} </h4>
+                Price: <input type="text" class="from-control mx-2" value="${data.price}" id="price">
+                Quantity: <input type="text" class="from-control mx-2" value="${data.quantity}" id="quantity">
+                <button class="btn btn-success" onclick="setUpdating('${data._id}')"> Update </button>
+                `;
+                })
+        }
+    </script>
+</body>
+
+</html>
