@@ -25,6 +25,7 @@ client.connect((err) => {
 		});
 	});
 
+
 	app.get('/product/:id', (req, res) => {
 		productCollection.find({ _id: ObjectId(req.params.id) }).toArray((err, documents) => {
 			res.send(documents[0]);
@@ -59,4 +60,4 @@ client.connect((err) => {
 	});
 });
 
-app.listen(3000);
+app.listen(5000);
