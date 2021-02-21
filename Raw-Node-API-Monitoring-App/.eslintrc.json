@@ -13,7 +13,7 @@
     "prettier/prettier": [
       "error",
       {
-        "trailingComma": "<es5|none|all>",
+        "trailingComma": "es6",
         "singleQuote": true,
         "printWidth": 100,
         "tabWidth": 4,
