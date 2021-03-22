@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const myRouter = require('./myRouter');
 
 const app = express();
 
@@ -44,6 +45,9 @@ const errorMiddleware = (err, req, res, next) => {
 };
 
 app.use('/admin', adminRoute);
+app.use('/wp', myRouter); // router
+myRouter.all('*', myMiddleware);
+
 app.use(myMiddleware); // application label middleware
 adminRoute.use(loggerWrapper({ log: true })); // configurable middleware
 // adminRoute.use(logger); // router label middleware
