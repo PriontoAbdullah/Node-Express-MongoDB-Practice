@@ -3,19 +3,58 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json()); // build in label middleware
+app.use(cookieParser()); // 3rd party label middleware
 app.set('view engine', 'ejs');
 
 const adminRoute = express.Router();
+
+const myMiddleware = (req, res, next) => {
+	console.log('I am middleware');
+	next();
+	// res.end();
+};
+
+const loggerWrapper = (options) => {
+	return function(req, res, next) {
+		if (options.log) {
+			console.log(
+				`${new Date(
+					Date.now()
+				).toLocaleString()} - ${req.method} - ${req.originalUrl} - ${req.protocol} - ${req.ip}`
+			);
+			next();
+		} else {
+			throw new Error('Failed to log');
+		}
+	};
+};
+
+const logger = (req, res, next) => {
+	console.log(
+		`${new Date(Date.now()).toLocaleString()} - ${req.method} - ${req.originalUrl} - ${req.protocol} - ${req.ip}`
+	);
+	// next();
+	throw new Error('This is middleware error');
+};
+
+const errorMiddleware = (err, req, res, next) => {
+	console.log(err.message);
+	res.status(500).send('There was an error processing');
+};
+
+app.use('/admin', adminRoute);
+app.use(myMiddleware); // application label middleware
+adminRoute.use(loggerWrapper({ log: true })); // configurable middleware
+// adminRoute.use(logger); // router label middleware
+adminRoute.use(errorMiddleware); // error handling middleware
+
 adminRoute.get('/dashboard', (req, res) => {
 	console.log(req.baseUrl);
 	console.log(req.originalUrl);
 	console.log(req.path);
 	res.send('We are in Admin Dashboard');
 });
-
-app.use('/admin', adminRoute);
 
 app.get('/about', (req, res) => {
 	console.log(req.app.get('view app engine')); // use the express app module
