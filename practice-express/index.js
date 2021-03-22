@@ -1,11 +1,11 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const { handler } = require('./handler');
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.set('view engine', 'ejs');
 
 const adminRoute = express.Router();
 adminRoute.get('/dashboard', (req, res) => {
@@ -17,7 +17,12 @@ adminRoute.get('/dashboard', (req, res) => {
 
 app.use('/admin', adminRoute);
 
-app.get('/about', handler);
+app.get('/about', (req, res) => {
+	console.log(req.app.get('view app engine')); // use the express app module
+	console.log(req.accepts('json')); // define header accepts
+	console.log(req.get('content-type')); // get any header value
+	res.send(`<h1> About Page </h1>`);
+});
 
 app.get('/help', (req, res) => {
 	res.json({
@@ -28,6 +33,62 @@ app.get('/help', (req, res) => {
 app.get('/', (req, res) => {
 	console.log(req.route);
 	res.send(`<h1> Hello World </h1>`);
+});
+
+app.get('/view', (req, res) => {
+	console.log(res.headersSent);
+	res.render('pages/about', {
+		name: 'Bangladesh'
+	});
+});
+
+app.get('/hello', (req, res) => {
+	// res.send('Hello');
+	res.status(200);
+	res.end();
+	// or can write
+	// res.sendStatus(200);
+});
+
+app.get('/test', (req, res) => {
+	res.send('hello');
+});
+
+app.get('/hi', (req, res) => {
+	res.format({
+		'text/plain': () => {
+			res.send('hi');
+		},
+		'text/html': () => {
+			res.render('pages/about', {
+				name: 'hello'
+			});
+		},
+		'application/json': () => {
+			res.json({
+				message: 'hello'
+			});
+		},
+		default: () => {
+			res.status(406).send('Not Acceptable');
+		}
+	});
+});
+
+app.get('/cookie', (req, res) => {
+	res.cookie('name', 'haumaukhau');
+	res.end();
+});
+
+app.get('/location', (req, res) => {
+	res.redirect('/test');
+	res.end();
+});
+
+app.get('/handler', (req, res) => {
+	res.set('hello', 'world');
+	console.log(res.get('hello'));
+	res.end();
 });
 
 app.get('/user/:id', (req, res) => {
