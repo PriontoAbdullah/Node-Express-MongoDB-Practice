@@ -7,15 +7,18 @@ myRouter.get('/', (req, res) => {
 });
 
 myRouter.get('/login', (req, res) => {
-	res.send('Login');
+	console.log(req.query);
+	let {email, password} = req.query;
+	res.send(`Login user is ${email}`);
 });
 
-myRouter.param('user', (req, res, next, id) => {
+myRouter.param('userID', (req, res, next, id) => {
 	req.user = id === '1' ? 'Admin' : 'Anonymous';
 	next();
 });
 
-myRouter.get('/:user', (req, res) => {
+myRouter.get('/:userID', (req, res) => {
+	console.log(req.params);
 	res.send(`Hello ${req.user}`);
 });
 

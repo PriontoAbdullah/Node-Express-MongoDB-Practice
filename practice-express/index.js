@@ -1,11 +1,13 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 const myRouter = require('./myRouter');
 
 const app = express();
 
 app.use(express.json()); // build in label middleware
 app.use(cookieParser()); // 3rd party label middleware
+// app.use(morgan('dev'));
 app.set('view engine', 'ejs');
 
 const adminRoute = express.Router();
@@ -60,7 +62,7 @@ adminRoute.get('/dashboard', (req, res) => {
 	res.send('We are in Admin Dashboard');
 });
 
-app.get('/about', (req, res) => {
+app.get('/about', morgan('dev'), (req, res) => {
 	console.log(req.app.get('view app engine')); // use the express app module
 	console.log(req.accepts('json')); // define header accepts
 	console.log(req.get('content-type')); // get any header value
