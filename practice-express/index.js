@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const myRouter = require('./myRouter');
+const userRouter = require('./userRouter');
 
 const app = express();
 
@@ -50,6 +51,9 @@ app.use('/admin', adminRoute);
 app.use('/wp', myRouter); // router
 myRouter.all('*', myMiddleware);
 
+// User Router
+app.use('/users', userRouter);
+
 app.use(myMiddleware); // application label middleware
 adminRoute.use(loggerWrapper({ log: true })); // configurable middleware
 // adminRoute.use(logger); // router label middleware
@@ -61,6 +65,7 @@ adminRoute.get('/dashboard', (req, res) => {
 	console.log(req.path);
 	res.send('We are in Admin Dashboard');
 });
+
 
 app.get('/about', morgan('dev'), (req, res) => {
 	console.log(req.app.get('view app engine')); // use the express app module
