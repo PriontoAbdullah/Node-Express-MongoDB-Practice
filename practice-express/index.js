@@ -126,7 +126,7 @@ app.get('/hi', (req, res) => {
 });
 
 app.get('/cookie', (req, res) => {
-	res.cookie('name', 'haumaukhau');
+	res.cookie('name', 'Hello');
 	res.end();
 });
 
