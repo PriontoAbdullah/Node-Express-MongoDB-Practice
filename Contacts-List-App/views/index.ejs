@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact List App</title>
+</head>
+
+<body>
+
+    <h1>
+        <%= title %>
+    </h1>
+    <p>This is an example of the feature that will be used when you click the contact list button on the right side of
+        the screen and click the contact list button on the left side of the screen </p>
+
+    <%= new Date().toLocaleString() %>
+
+        <% if(post.published) { %>
+            <h3>
+                <%= post.title %>
+            </h3>
+            <p>
+                <%= post.body %>
+            </p>
+            <% } else { %>
+                <p> Post is not yet published</p>
+            <% } %>
+
+                    <ul>
+                        <% for (let c of comments) { %>
+                            <li>
+                                <%= c.title %> by <%= c.author %>
+                            </li>
+                            <% } %>
+                    </ul>
+
+</body>
+
+</html>
