@@ -5,37 +5,105 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>Contact List App</title>
 </head>
 
 <body>
 
-    <h1>
-        <%= title %>
-    </h1>
-    <p>This is an example of the feature that will be used when you click the contact list button on the right side of
-        the screen and click the contact list button on the left side of the screen </p>
+    <div class="container">
+        <div class="my-4">
+            <h4>Create a new contact</h4>
+            <form action="/contact" method="POST" class="form-inline" id="contact-form">
+                <div class="form-group mr-3">
+                    <input type="text" name="name" placeholder="Name"
+                        class="form-control <%= error.name? 'is-invalid': '' %>">
+                    <div class="invalid-feedback">
+                        <%= error.name %>
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <input type="text" name="phone" placeholder="Phone"
+                        class="form-control <%= error.phone? 'is-invalid': '' %>">
+                    <div class="invalid-feedback">
+                        <%= error.phone %>
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <input type="text" name="email" placeholder="Email"
+                        class="form-control <%= error.email? 'is-invalid': '' %>">
+                    <div class="invalid-feedback">
+                        <%= error.email %>
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <input type="hidden" name="id">
+                </div>
+                <div class="form-group mr-3">
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
 
-    <%= new Date().toLocaleString() %>
+        <div>
+            <h4>Your Contacts</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <% for(let contact of contacts) { %>
+                    <tr>
+                        <td>
+                            <%= contact.name %>
+                        </td>
+                        <td>
+                            <%= contact.phone %>
+                        </td>
+                        <td>
+                            <%= contact.email %>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm edit-btn" data-name="<%= contact.name %>"
+                                data-phone="<%= contact.phone %>" data-email="<%= contact.email %>"
+                                data-id="<%= contact._id %>">
+                                Edit
+                            </button>
+                            <a href="/contact/delete/<%= contact._id %>" class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    <% } %>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-        <% if(post.published) { %>
-            <h3>
-                <%= post.title %>
-            </h3>
-            <p>
-                <%= post.body %>
-            </p>
-            <% } else { %>
-                <p> Post is not yet published</p>
-            <% } %>
+    <script>
+        window.onload = function () {
+            let editBtn = document.getElementsByClassName('edit-btn')
+            let form = document.getElementById('contact-form')
 
-                    <ul>
-                        <% for (let c of comments) { %>
-                            <li>
-                                <%= c.title %> by <%= c.author %>
-                            </li>
-                            <% } %>
-                    </ul>
+                ;[...editBtn].forEach(btn => {
+                    btn.addEventListener('click', function (e) {
+                        let = { name, phone, email, id } = e.target.dataset;
+                        form[0].value = name;
+                        form[1].value = phone;
+                        form[2].value = email;
+                        form[3].value = id;
+                        form[4].value = 'Update';
+                    })
+                })
+        }
+    </script>
 
 </body>
 

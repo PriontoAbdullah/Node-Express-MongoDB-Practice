@@ -4,8 +4,9 @@ const { getAllContacts, getSingleContact,  createContact, updatedContact, delete
 
 router.get('/', getAllContacts);
 router.get('/:id', getSingleContact);
+router.get('/delete/:id', deleteContact);
 router.post('/', createContact);
 router.put('/:id', updatedContact);
-router.delete('/:id', deleteContact);
+// router.delete('/:id', deleteContact);
 
 module.exports = router;

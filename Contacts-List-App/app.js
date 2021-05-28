@@ -26,7 +26,7 @@ let testSchema = new Schema({
 
 let Test = mongoose.model('Test', testSchema);
 
-app.get('/', (req, res) => {
+app.get('/ejs', (req, res) => {
 	let post = {
 		title: 'Test Title',
 		body: 'Test Body',
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 		{ title: 'Three', author: 'Alom' },
 		{ title: 'Four', author: 'Ananta' }
 	];
-	res.render('index', { title: 'EJS is an awesome template engine', post, comments });
+	res.render('test', { title: 'EJS is an awesome template engine', post, comments });
 });
 
 app.get('/test', (req, res) => {
