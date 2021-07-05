@@ -3,7 +3,8 @@ const morgan = require('morgan');
 const contactRoutes = require('./contactRoutes');
 const mongoose = require('mongoose');
 const todoHandler = require('./todoHandler');
-const router = require('./routes')
+const userHandler = require('./userHandler');
+const router = require('./routes');
 require('dotenv').config();
 
 const app = express();
@@ -17,7 +18,7 @@ app.use(express.json());
 app.use('/contacts', contactRoutes);
 app.use('/todo', todoHandler);
 app.use('/contact', router);
-
+app.use('/user', userHandler);
 
 let Schema = mongoose.Schema;
 let testSchema = new Schema({
@@ -62,13 +63,14 @@ app.get('*', (req, res) => {
 	res.send(`<h1>Please use the '/contacts' route</h1>`);
 });
 
-function errorHandler(err, req, res, next) {
+const errorHandler = (err, req, res, next) => {
 	if (res.headersSent) {
 		return next(err);
 	}
 	res.status(500).json({ error: err });
-}
+};
 
+app.use(errorHandler);
 const port = process.env.PORT || 8080;
 
 mongoose

@@ -1,12 +1,14 @@
-const express = require("express");
-const mongoose = require("mongoose");
+const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const todoSchema = require('./todoSchema');
+const checkLogin = require('./checkLoginMiddleware');
 
 const Todo = new mongoose.model('Todo', todoSchema);
 
 // Get all the Todos
-router.get('/', (req, res) => {
+router.get('/', checkLogin, (req, res) => {
+	console.log(req.username);
 	Todo.find({ status: 'active' }, (err, data) => {
 		if (err) {
 			res.status(500).json({
@@ -80,7 +82,7 @@ router.get('/actives', (req, res) => {
 router.get('/js', async (req, res) => {
 	const data = await Todo.findByJS();
 	res.status(200).json({
-	    data,
+		data,
 		message: 'Todos was shown successfully'
 	});
 });
@@ -89,7 +91,7 @@ router.get('/js', async (req, res) => {
 router.get('/hero', async (req, res) => {
 	const data = await Todo.find().byHero('hero');
 	res.status(200).json({
-	    data,
+		data,
 		message: 'Todos was shown successfully'
 	});
 });
